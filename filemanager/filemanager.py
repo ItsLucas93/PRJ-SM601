@@ -1,3 +1,9 @@
+"""
+Projet: PRJ-SM601 - Théorie des Graphes - 2023/2024 - Thème sur l'Ordonnancement
+Auteurs: BAUDET Antoine, SABBEH Chokri, HOUEE Adrien, KOCOGLU Lucas
+Description: Ce fichier est le fichier qui lit les graphes, il permet de lister les fichiers .txt disponibles dans le dossier de testfiles ainsi que de le convertir en tableau de contraintes.
+Version de Python : 3.12
+"""
 import os
 from termcolor import colored
 
@@ -24,3 +30,9 @@ def files_list(path = "testfilses"):
         return colored("Le dossier de ", "red") + colored(str(path), "red", attrs=["bold", "underline"]) + colored(" n'a pas été trouvé.", "red"), None
     except Exception as e:
         return colored("Une erreur est survenue : " + str(e), "red"), None
+
+
+def read_file(file):
+    """
+    Lire un fichier contenant le graph et renvoie son contenu.
+    """
