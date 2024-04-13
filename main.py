@@ -32,6 +32,8 @@ FIn
 from termcolor import colored
 
 from filemanager.filemanager import files_list
+from filemanager.filemanager import read_file
+from fonctions.graph_display import display_graph_matrix
 
 # Fonctions
 def welcome():
@@ -54,12 +56,11 @@ def menu_principal(choix=0):
     Tant que l’utilisateur décide de tester un tableau de contraintes faire
     Choisir le tableau de contraintes à traiter
     """
-
-    print("---------------------- Menu Principal ----------------------"
-          "\n1.\tLire un tableau de contraintes sur fichier"
-          "\n2.\tQuitter le programme"
-          "\n----------------------------------------------------------")
     while True:
+        print("---------------------- Menu Principal ----------------------"
+              "\n1.\tLire un tableau de contraintes sur fichier"
+              "\n2.\tQuitter le programme"
+              "\n----------------------------------------------------------")
         try:
             choix = int(input("Entrez votre choix : "))
             match choix:
@@ -92,8 +93,11 @@ def menu_graphe(choix=0):
                 if index_test_files[choix] == "Retour au menu principal":
                     break
                 elif choix in index_test_files.keys():
-                    # TODO: Lire le tableau de contraintes sur fichier et le stocker en mémoire
-                    pass
+                    # print(read_file(index_test_files[choix])[0])
+                    graph_dict, graph_matrix = read_file(index_test_files[choix])
+                    # TODO: PRINT ETAPE 1
+                    display_graph_matrix(graph_matrix)
+                    input("Appuyez sur une touche pour continuer...")
                     break
                 else:
                     print(colored("Le choix n'a pas été reconnue.", "red"))
