@@ -58,25 +58,26 @@ def display_graph_relations(graph_dictionnary):
             print(str(task_id) + " -> ω = " + str(graph_dictionnary[task_id][0]))
 
 
+def display_graph_matrix(graph_matrix):
     """
     Fonction permettant d'afficher la matrice du graphe.
     """
-    # header = [""] + [colored(str(i), "cyan", attrs=["bold"]) for i in range(len(matrix))]
+    # header = [""] + [colored(str(i), "cyan", attrs=["bold"]) for i in range(len(graph_matrix))]
     header = [""]
-    for i in range(len(matrix)):
+    for i in range(len(graph_matrix)):
         if i == 0:
             header.append(colored("α", "cyan", attrs=["bold"]))
-        elif i == len(matrix) - 1:
+        elif i == len(graph_matrix) - 1:
             header.append(colored("ω", "cyan", attrs=["bold"]))
         else:
             header.append(colored(str(i), "cyan", attrs=["bold"]))
 
-    # body = [[colored(str(i), "cyan", attrs=["bold"])] + row for i, row in enumerate(matrix)]
+    # body = [[colored(str(i), "cyan", attrs=["bold"])] + row for i, row in enumerate(graph_matrix)]
     body = []
-    for i, row in enumerate(matrix):
+    for i, row in enumerate(graph_matrix):
         if i == 0:
             body.append([colored("α", "cyan", attrs=["bold"])] + row)
-        elif i == len(matrix) - 1:
+        elif i == len(graph_matrix) - 1:
             body.append([colored("ω", "cyan", attrs=["bold"])] + row)
         else:
             body.append([colored(str(i), "cyan", attrs=["bold"])] + row)
