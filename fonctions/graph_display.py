@@ -1,7 +1,7 @@
 from tabulate import tabulate
 from termcolor import colored
 
-def display_graph(graph):
+def display_graph_relations(graph_dictionnary):
     """
     Affichage du graphe comme un jeu de triplets, par exemple:
 
@@ -18,9 +18,46 @@ def display_graph(graph):
     4 -> 5 = 4
     5 -> 6 = 5
     """
-    pass
+    no_successors = set(graph_dictionnary.keys())
+    no_predecessors = set()
 
-def display_graph_matrix(matrix):
+    cpt_arcs = 0
+    for task_id, (duration, predecessors) in graph_dictionnary.items():
+        for predecessor in predecessors:
+            no_successors.discard(predecessor)
+            cpt_arcs += 1
+
+    for task_id, (duration, predecessors) in graph_dictionnary.items():
+        if not predecessors:
+            no_predecessors.add(task_id)
+            cpt_arcs += 1
+
+    cpt_arcs += len(no_successors)
+    cpt_sommets = len(graph_dictionnary) + 2
+
+    print("* Création du graphe d’ordonnancement : "
+          "\n" + str(cpt_sommets) + " sommets"
+          "\n" + str(cpt_arcs) + " arcs")
+
+    # Création d'un dictionnaire inversé pour faire apparaître les arcs triés par le numéro de tâche
+    graph_dictionnary_flipped = {task_id: (duration, []) for task_id, (duration, predecessors) in graph_dictionnary.items()}
+    for task_id, (duration, predecessors) in graph_dictionnary.items():
+        for predecessor in predecessors:
+            graph_dictionnary_flipped[predecessor][1].append(task_id)
+
+    # Affiche les arcs
+    for task_id in no_predecessors:
+        print("α" + " -> " + str(task_id) + " = 0")
+
+    sorted_tasks = sorted(graph_dictionnary_flipped.keys())
+    for task_id in sorted_tasks:
+        duration, successors = graph_dictionnary_flipped[task_id]
+        for successor in successors:
+            print(str(task_id) + " -> " + str(successor) + " = " + str(graph_dictionnary[successor][0]))
+        if task_id in no_successors:
+            print(str(task_id) + " -> ω = " + str(graph_dictionnary[task_id][0]))
+
+
     """
     Fonction permettant d'afficher la matrice du graphe.
     """

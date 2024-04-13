@@ -34,6 +34,7 @@ from termcolor import colored
 from filemanager.filemanager import files_list
 from filemanager.filemanager import read_file
 from fonctions.graph_display import display_graph_matrix
+from fonctions.graph_display import display_graph_relations
 
 # Fonctions
 def welcome():
@@ -95,9 +96,11 @@ def menu_graphe(choix=0):
                 elif choix in index_test_files.keys():
                     # print(read_file(index_test_files[choix])[0])
                     graph_dict, graph_matrix = read_file(index_test_files[choix])
-                    # TODO: PRINT ETAPE 1
+                    display_graph_relations(graph_dict)
+                    input("Appuyez sur une touche pour continuer...")
                     display_graph_matrix(graph_matrix)
                     input("Appuyez sur une touche pour continuer...")
+                    # TODO: PRINT PARTIE 3
                     break
                 else:
                     print(colored("Le choix n'a pas été reconnue.", "red"))
