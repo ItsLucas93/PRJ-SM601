@@ -31,6 +31,7 @@ FIn
 
 from termcolor import colored
 
+from filemanager.filemanager import files_list
 
 # Fonctions
 def welcome():
@@ -54,23 +55,54 @@ def menu_principal(choix=0):
     Choisir le tableau de contraintes à traiter
     """
 
+    print("---------------------- Menu Principal ----------------------"
+          "\n1.\tLire un tableau de contraintes sur fichier"
+          "\n2.\tQuitter le programme"
+          "\n----------------------------------------------------------")
     while True:
-        print("---------------------- Menu Principal ----------------------"
-              "\n1.\tLire un tableau de contraintes sur fichier"
-              "\n2.\tQuitter le programme"
-              "\n----------------------------------------------------------")
-
         try:
             choix = int(input("Entrez votre choix : "))
             match choix:
                 case 1:
-                    pass
+                    menu_graphe()
                 case 2:
                     return True
                 case _:
                     print(colored("Le choix n'a pas été reconnue.", "red"))
         except ValueError:
             print(colored("Veuillez entrer un nombre entier valide.", "red"))
+        except Exception as e:
+            print(colored("Une erreur est survenue : " + str(e), "red"))
+
+
+def menu_graphe(choix=0):
+    """
+    Fonction permettant d'afficher le menu du graphe.
+    """
+
+    string_test_files, index_test_files = files_list()
+
+    if index_test_files is not None:
+        print("---------------------- Menu Graphe ----------------------"
+              + string_test_files +
+              "----------------------------------------------------------")
+        while True:
+            try:
+                choix = int(input("Entrez le numéro du fichier à traiter : "))
+                if index_test_files[choix] == "Retour au menu principal":
+                    break
+                elif choix in index_test_files.keys():
+                    # TODO: Lire le tableau de contraintes sur fichier et le stocker en mémoire
+                    pass
+                    break
+                else:
+                    print(colored("Le choix n'a pas été reconnue.", "red"))
+            except ValueError:
+                print(colored("Veuillez entrer un nombre entier valide.", "red"))
+            except Exception as e:
+                print(colored("Une erreur est survenue : " + str(e), "red"))
+    else:
+        print(string_test_files)
 
 
 # Programme principal
@@ -85,5 +117,5 @@ if __name__ == '__main__':
         print(colored("\nLe programme a été interrompu par l'utilisateur.", "red"))
         exit(0)
     except Exception as e:
-        print(colored(f"\nUne erreur s'est produite : {e}", "red"))
+        print(colored("Une erreur est survenue : " + str(e), "red"))
         exit(1)
