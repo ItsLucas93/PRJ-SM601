@@ -57,20 +57,20 @@ def display_graph_relations(graph_dictionnary):
     # Affiche les arcs
     for task_id in no_predecessors:
         if config.notation:
-            print("0" + " -> " + str(task_id) + " = 0")
+            print("0" + " → " + str(task_id) + " = 0")
         else:
-            print("α" + " -> " + str(task_id) + " = 0")
+            print("α" + " → " + str(task_id) + " = 0")
 
     sorted_tasks = sorted(graph_dictionnary_flipped.keys())
     for task_id in sorted_tasks:
         duration, successors = graph_dictionnary_flipped[task_id]
         for successor in successors:
-            print(str(task_id) + " -> " + str(successor) + " = " + str(graph_dictionnary[successor][0]))
+            print(str(task_id) + " → " + str(successor) + " = " + str(graph_dictionnary[successor][0]))
         if task_id in no_successors:
             if config.notation:
-                print(str(task_id) + " -> " + str(cpt_sommets - 1) + " = " + str(graph_dictionnary[task_id][0]))
+                print(str(task_id) + " → " + str(cpt_sommets - 1) + " = " + str(graph_dictionnary[task_id][0]))
             else:
-                print(str(task_id) + " -> ω = " + str(graph_dictionnary[task_id][0]))
+                print(str(task_id) + " → ω = " + str(graph_dictionnary[task_id][0]))
 
 
 def display_graph_matrix(graph_matrix):
