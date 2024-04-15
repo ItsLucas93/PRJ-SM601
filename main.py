@@ -35,6 +35,8 @@ from filemanager.filemanager import files_list
 from filemanager.filemanager import read_file
 from fonctions.graph_display import display_graph_matrix
 from fonctions.graph_display import display_graph_relations
+from fonctions.validators import ordonnancement_validator
+
 
 # Fonctions
 def welcome():
@@ -101,6 +103,8 @@ def menu_graphe(choix=0):
                     display_graph_matrix(graph_matrix)
                     input("Appuyez sur une touche pour continuer...")
                     # TODO: PRINT PARTIE 3
+                    ordonnancement_validator(graph_matrix, graph_dict)
+                    input("Appuyez sur une touche pour continuer...")
                     break
                 else:
                     print(colored("Le choix n'a pas été reconnue.", "red"))

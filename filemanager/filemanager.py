@@ -74,7 +74,7 @@ def graph_matrix(graph_dictionnary, path=folder_path):
     max_sommets = max(graph_dictionnary.keys())
 
     # Initialise la matrice à None, matrix[0][x]/matrix[x][0] = α, matrix[n][x]/matrix[x][n] = ω
-    matrix = [[None for _ in range(max_sommets + 2)] for _ in range(max_sommets + 2)]
+    matrix = [[None for i in range(max_sommets + 2)] for j in range(max_sommets + 2)]
     for task_id, (duration, predecessors) in graph_dictionnary.items():
         if not predecessors:
             matrix[0][task_id] = 0
