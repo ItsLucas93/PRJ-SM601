@@ -116,6 +116,12 @@ def ordonnancement_validator(matrix, graph={}):
     # Vérification de l'absence d'arêtes négatives
     has_no_negative_edges_graph = has_no_negative_edges(matrix)
 
+    # Affichage des matrices
+    print("* " + colored("Matrice d'adjacence :", attrs=["bold", "underline"]))
+    display_graph_matrix(adjacency_matrix)
+    print("* " + colored("Matrice transitive :", attrs=["bold", "underline"]))
+    display_graph_matrix(transitive_matrix)
+
     if is_single_entry_point and is_single_exit_point and is_no_circuit_graph and has_no_negative_edges_graph:
         print("Le graphe possède un seul point d'entrée : " + str(entry_point))
         print("Le graphe possède un seul point de sortie : " + str(exit_point))

@@ -44,7 +44,7 @@ def display_graph_relations(graph_dictionnary):
     cpt_arcs += len(no_successors)
     cpt_sommets = len(graph_dictionnary) + 2
 
-    print("* Création du graphe d’ordonnancement : "
+    print("* " + colored("Affichage du graphe :", attrs=["bold", "underline"]) +
           "\n" + str(cpt_sommets) + " sommets"
           "\n" + str(cpt_arcs) + " arcs")
 

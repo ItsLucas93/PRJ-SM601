@@ -65,7 +65,7 @@ def menu_principal(choix=0):
               "\n2.\tQuitter le programme"
               "\n----------------------------------------------------------")
         try:
-            choix = int(input("Entrez votre choix : "))
+            choix = int(input(colored("Entrez votre choix : ", "magenta")))
             match choix:
                 case 1:
                     menu_graphe()
@@ -92,20 +92,47 @@ def menu_graphe(choix=0):
               "----------------------------------------------------------")
         while True:
             try:
-                choix = int(input("Entrez le numéro du fichier à traiter : "))
+                choix = int(input(colored("Entrez le numéro du fichier à traiter : ", "magenta")))
                 if index_test_files[choix] == "Retour au menu principal":
                     break
                 elif choix in index_test_files.keys():
                     # print(read_file(index_test_files[choix])[0])
                     graph_dict, graph_matrix = read_file(index_test_files[choix])
+                    print("----------------------------------------------------------")
                     display_graph_relations(graph_dict)
-                    input("Appuyez sur une touche pour continuer...")
+                    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+                    print("----------------------------------------------------------")
+                    print("* " + colored("Matrice de valeurs :", attrs=["bold", "underline"]))
                     display_graph_matrix(graph_matrix)
-                    input("Appuyez sur une touche pour continuer...")
-                    # TODO: PRINT PARTIE 3
+                    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+                    print("----------------------------------------------------------")
+                    # Vérification des propriétés du graphe d'ordonnancement
                     validator = ordonnancement_validator(graph_matrix, graph_dict)
-                    input("Appuyez sur une touche pour continuer...")
-                    break
+                    if validator:
+                        confirm = None
+                        while confirm not in ['y', 'n']:
+                            confirm = input(colored("Souhaitez-vous continuer ? (y/n)... ", "magenta"))
+                            match confirm:
+                                case 'y':
+                                    # TODO: Calculer les rangs des sommets et les afficher
+                                    # TODO: Calculer les calendriers au plus tôt et au plus tard et les afficher
+                                    # TODO: Calculer les marges et les afficher
+                                    # TODO: Calculer le(s) chemin(s) critique(s) et les afficher
+                                    break
+                                case 'n':
+                                    print(
+                                        colored("Retour au choix de tableau...", "magenta"))
+                                    print("---------------------- Menu Graphe ----------------------"
+                                          + string_test_files +
+                                          "----------------------------------------------------------")
+                                    break
+                                case _:
+                                    print(colored("Le choix n'a pas été reconnue.", "red"))
+                    else:
+                        input(colored("Appuyez sur une touche pour continuer (retour au choix de tableau)...", "magenta"))
+                        print("---------------------- Menu Graphe ----------------------"
+                              + string_test_files +
+                              "----------------------------------------------------------")
                 else:
                     print(colored("Le choix n'a pas été reconnue.", "red"))
             except ValueError:
