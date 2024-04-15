@@ -5,7 +5,7 @@ Description: Ce fichier est le fichier qui contient les fonctions de validation 
 Version de Python : 3.12
 """
 from termcolor import colored
-from graph_display import display_graph_matrix
+from fonctions.graph_display import display_graph_matrix
 
 def matrix_value_to_matrix_adjacency(matrix):
     """
