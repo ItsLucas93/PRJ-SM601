@@ -103,7 +103,7 @@ def menu_graphe(choix=0):
                     display_graph_matrix(graph_matrix)
                     input("Appuyez sur une touche pour continuer...")
                     # TODO: PRINT PARTIE 3
-                    ordonnancement_validator(graph_matrix, graph_dict)
+                    validator = ordonnancement_validator(graph_matrix, graph_dict)
                     input("Appuyez sur une touche pour continuer...")
                     break
                 else:
