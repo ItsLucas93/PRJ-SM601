@@ -128,7 +128,7 @@ def ordonnancement_validator(matrix, graph={}):
         print("Le graphe ne possède pas de circuit.")
         print("Le graphe ne possède pas d'arêtes négatives.")
         print(colored("Le graphe est un graphe d'ordonnancement.", "green", attrs=["bold"]))
-        return True
+        return True, adjacency_matrix
     else:
         if not is_single_entry_point:
             print(colored("Le graphe ne possède pas qu'un seul point d'entrée.", "red", attrs=["bold"]))
@@ -146,4 +146,4 @@ def ordonnancement_validator(matrix, graph={}):
             print(colored("Le graphe possède des arêtes négatives.", "red", attrs=["bold"]))
         else:
             print("Le graphe ne possède pas d'arêtes négatives.")
-    return False
+    return False, adjacency_matrix

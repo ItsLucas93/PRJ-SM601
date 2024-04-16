@@ -4,6 +4,7 @@ Auteurs: BAUDET Antoine, SABBEH Chokri, HOUEE Adrien, KOCOGLU Lucas
 Description: Ce fichier est le fichier principal du projet, il permet de lancer les exécutions de fonction depuis les autres fichiers python.
 Version de Python : 3.12
 """
+from fonctions.ordonnancement import ordonnencement_graph
 
 """
 Rappel de la structure du Pseudo-code :
@@ -107,7 +108,7 @@ def menu_graphe(choix=0):
                     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
                     print("----------------------------------------------------------")
                     # Vérification des propriétés du graphe d'ordonnancement
-                    validator = ordonnancement_validator(graph_matrix, graph_dict)
+                    validator, adjacency_matrix = ordonnancement_validator(graph_matrix, graph_dict)
                     if validator:
                         confirm = None
                         while confirm not in ['y', 'n']:
@@ -118,6 +119,7 @@ def menu_graphe(choix=0):
                                     # TODO: Calculer les calendriers au plus tôt et au plus tard et les afficher
                                     # TODO: Calculer les marges et les afficher
                                     # TODO: Calculer le(s) chemin(s) critique(s) et les afficher
+                                    ordonnencement_graph(adjacency_matrix, graph_matrix)
                                     break
                                 case 'n':
                                     print(
