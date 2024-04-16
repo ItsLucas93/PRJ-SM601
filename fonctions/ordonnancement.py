@@ -21,7 +21,9 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     Fonction d'ordonnancement du graphe.
     """
     ranks = rank_calculator(adjacency_matrix)
-    display_rank_matrix(ranks, value_matrix)
+    str_tab = display_rank_matrix(ranks, value_matrix)
+    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+    str_tab = display_predecessor(adjacency_matrix, str_tab)
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
 
@@ -91,4 +93,38 @@ def display_rank_matrix(ranks, matrix):
     else:
         pass
     print(tabulate([line1, line2], tablefmt="mixed_grid", numalign="center", stralign="center"))
+    return [line1, line2]
 
+
+def display_predecessor(adjacency_matrix, str_tab):
+    """
+    Fonction permettant d'afficher les prédécesseurs dans le tableau
+    """
+    print("* " + colored("Dates au plus-tôt - Prédécesseurs :", attrs=["bold", "underline"]))
+    line3 = ["Prédécesseurs"]
+    for i in range(len(adjacency_matrix)):
+        predecessor = []
+        for j in range(len(adjacency_matrix)):
+            if adjacency_matrix[j][i] != 0:
+                predecessor.append(j)
+
+        if not predecessor:
+            line3.append(colored("--", attrs=["bold"]))
+        else:
+            str_predecessor = ""
+            for p in predecessor:
+                str_predecessor += str(p) + ", "
+            str_predecessor = str_predecessor[:-2]
+
+            if 0 in predecessor:
+                # Construction du String
+                if not config.notation:
+                    str_predecessor = "α" + str_predecessor[1:]
+            elif len(adjacency_matrix) - 1 in predecessor:
+                if not config.notation:
+                    str_predecessor = str_predecessor[:-1] + "ω"
+            line3.append(colored(str_predecessor, attrs=["bold"]))
+
+    str_tab.append(line3)
+    print(tabulate(str_tab, tablefmt="mixed_grid", numalign="center", stralign="center"))
+    return str_tab
