@@ -294,14 +294,13 @@ def latest_dates(tasks_ranks, duration_matrix, earliest_start_dates, successors_
                     list_of_dates.append(calculated_date)
                     date_per_successor[task].append(calculated_date)
                 else:
-                    print(f"Erreur: Données manquantes ou erronées pour la tâche {task} vers {successor}")
-                    date_per_successor[task].append(float('inf'))  # Maintenir l'alignement de l'index
+                    # Maintenir l'alignement de l'index
+                    date_per_successor[task].append(float('inf'))
 
             if list_of_dates:
                 latest_finish_dates[task] = min(list_of_dates)
             else:
                 latest_finish_dates[task] = earliest_start_dates[task]
-                print(f"Aucune date valide trouvée pour la tâche {task}, utilisant la date au plus tôt par défaut.")
         else:
             # Si aucune successeur n'est présent, la date au plus tard est égale à la date au plus tôt
             latest_finish_dates[task] = earliest_start_dates[task]
