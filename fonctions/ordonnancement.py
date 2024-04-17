@@ -59,15 +59,15 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
 
     # Tri du tableau par tri insertion
     # TODO: Trier le tableau en fonction du rang
-    """
-    str_tab = sort_table_by_rank(str_tab)
-    str_tab_2 = sort_table_by_rank(str_tab_2)
-    str_tab_3 = sort_table_by_rank(str_tab_3)
-    str_tab_4 = sort_table_by_rank(str_tab_4)
-    str_tab_5 = sort_table_by_rank(str_tab_5)
-    str_tab_6 = sort_table_by_rank(str_tab_6)
-    str_tab_7 = sort_table_by_rank(str_tab_7)
-    """
+
+    str_tab = sort_table_by_rank(str_tab, ranks)
+    str_tab_2 = sort_table_by_rank(str_tab_2, ranks)
+    str_tab_3 = sort_table_by_rank(str_tab_3, ranks)
+    str_tab_4 = sort_table_by_rank(str_tab_4, ranks)
+    str_tab_5 = sort_table_by_rank(str_tab_5, ranks)
+    str_tab_6 = sort_table_by_rank(str_tab_6, ranks)
+    str_tab_7 = sort_table_by_rank(str_tab_7, ranks)
+    str_tab_8 = sort_table_by_rank(str_tab_8, ranks)
 
     # Affichage
     print("* " + colored("Rangs :", attrs=["bold", "underline"]))
@@ -402,28 +402,21 @@ def display_latest_finish_dates(date_per_successor_list, latest_finish_dates_lis
     return str_tab_copy, line5
 
 
-def sort_table_by_rank(str_tab):
+def sort_table_by_rank(str_tab, ranks):
     """
     Fonction permettant de trier le tableau par rang.
-    Algorithmes de tri : Tri bubble
     """
-    for i in range(1, len(str_tab)):
-        flag = 0
-        for j in range(1, len(str_tab)):
-            if str_tab[0][j] > str_tab[0][j+1]:
-                tmp = str_tab[0][j]
-                str_tab[0][j] = str_tab[0][j+1]
-                str_tab[0][j+1] = tmp
-                flag = 1
-                for k in range(1, len(str_tab)):
-                    tmp = str_tab[k][j]
-                    str_tab[k][j] = str_tab[k][j+1]
-                    str_tab[k][j+1] = tmp
+    # Créer une liste d'indices triés basés sur les rangs
+    sorted_indices = sorted(range(len(ranks)), key=lambda x: ranks[x])
 
-        if flag == 0:
-            break
+    # Réorganiser chaque ligne du tableau selon les indices triés
+    sorted_str_tab = []
+    for line in str_tab:
+        sorted_line = [line[0]]  # Conserver l'en-tête de la colonne
+        sorted_line.extend([line[i + 1] for i in sorted_indices])
+        sorted_str_tab.append(sorted_line)
 
-    return str_tab
+    return sorted_str_tab
 
 
 def total_margin(earliest_start_dates, latest_finish_dates):
