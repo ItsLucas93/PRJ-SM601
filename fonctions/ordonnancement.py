@@ -70,7 +70,7 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     print(tabulate(str_tab_2, tablefmt="mixed_grid", numalign="center", stralign="center"))
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
-    print("* " + colored("Dates au plus-tôt - Par Prédécesseur :", attrs=["bold", "underline"]))
+    print("* " + colored("Dates au plus-tôt - Dates par Prédécesseur :", attrs=["bold", "underline"]))
     print(tabulate(str_tab_3, tablefmt="mixed_grid", numalign="center", stralign="center"))
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
@@ -82,11 +82,11 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     print(tabulate(str_tab_5, tablefmt="mixed_grid", numalign="center", stralign="center"))
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
-    print("* " + colored("Dates au plus-tard :", attrs=["bold", "underline"]))
+    print("* " + colored("Dates au plus-tard - Dates par Successeurs:", attrs=["bold", "underline"]))
     print(tabulate(str_tab_6, tablefmt="mixed_grid", numalign="center", stralign="center"))
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
-    print("* " + colored("Dates au plus-tard - Par Successeur :", attrs=["bold", "underline"]))
+    print("* " + colored("Dates au plus-tard :", attrs=["bold", "underline"]))
     print(tabulate(str_tab_7, tablefmt="mixed_grid", numalign="center", stralign="center"))
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
