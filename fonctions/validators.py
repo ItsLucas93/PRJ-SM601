@@ -144,11 +144,17 @@ def ordonnancement_validator(matrix, graph={}):
         if not is_single_entry_point:
             print(colored("Le graphe ne possède pas qu'un seul point d'entrée.", "red", attrs=["bold"]))
         else:
-            print("Le graphe possède un seul point d'entrée : " + str(entry_point))
+            if not config.notation:
+                    print("Le graphe possède un seul point d'entrée : α")
+            else:
+                print("Le graphe possède un seul point d'entrée : " + str(entry_point))
         if not is_single_exit_point:
             print(colored("Le graphe ne possède pas qu'un seul point de sortie.", "red", attrs=["bold"]))
         else:
-            print("Le graphe possède un seul point de sortie : " + str(exit_point))
+            if not config.notation:
+                print("Le graphe possède un seul point de sortie : ω")
+            else:
+                print("Le graphe possède un seul point de sortie : " + str(exit_point))
         if not is_no_circuit_graph:
             print(colored("Le graphe possède un circuit.", "red", attrs=["bold"]))
         else:
