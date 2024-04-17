@@ -23,17 +23,29 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     ranks = rank_calculator(adjacency_matrix)
     str_tab = display_rank_matrix(ranks, value_matrix)
     predecessors_list, str_tab_2 = display_predecessor(adjacency_matrix, str_tab)
-    date_per_predecessor_list, earliest_start_dates_list = earliest_start_dates(value_matrix)
+    date_per_predecessor_list, earliest_start_dates_list = earliest_dates(value_matrix)
     str_tab_3 = display_earliest_start_dates_per_predecessor(date_per_predecessor_list, predecessors_list, str_tab_2)
     str_tab_4 = display_earliest_start_dates(date_per_predecessor_list, earliest_start_dates_list, predecessors_list, str_tab_3)
 
+    successors_list, str_tab_5 = display_successor(adjacency_matrix, str_tab)
+    date_per_successors_list, latest_dates_list = latest_dates(value_matrix, earliest_start_dates_list)
+    str_tab_6 = display_latest_dates_per_successor(date_per_successors_list, successors_list, str_tab_5)
+    str_tab_7 = display_latest_finish_dates(date_per_successors_list, latest_dates_list, successors_list, str_tab_6)
+    print(successors_list)
+    print(date_per_successors_list)
+    print(latest_dates_list)
+
     # Tri du tableau par tri insertion
+    # TODO: Trier le tableau en fonction du rang
+    """
     str_tab = sort_table_by_rank(str_tab)
     str_tab_2 = sort_table_by_rank(str_tab_2)
     str_tab_3 = sort_table_by_rank(str_tab_3)
     str_tab_4 = sort_table_by_rank(str_tab_4)
-
-    print(ranks)
+    str_tab_5 = sort_table_by_rank(str_tab_5)
+    str_tab_6 = sort_table_by_rank(str_tab_6)
+    str_tab_7 = sort_table_by_rank(str_tab_7)
+    """
 
     # Affichage
     print("* " + colored("Rangs :", attrs=["bold", "underline"]))
@@ -50,6 +62,18 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
 
     print("* " + colored("Dates au plus-tôt :", attrs=["bold", "underline"]))
     print(tabulate(str_tab_4, tablefmt="mixed_grid", numalign="center", stralign="center"))
+    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+
+    print("* " + colored("Dates au plus-tard - Successeurs :", attrs=["bold", "underline"]))
+    print(tabulate(str_tab_5, tablefmt="mixed_grid", numalign="center", stralign="center"))
+    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+
+    print("* " + colored("Dates au plus-tard :", attrs=["bold", "underline"]))
+    print(tabulate(str_tab_6, tablefmt="mixed_grid", numalign="center", stralign="center"))
+    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+
+    print("* " + colored("Dates au plus-tard - Par Successeur :", attrs=["bold", "underline"]))
+    print(tabulate(str_tab_7, tablefmt="mixed_grid", numalign="center", stralign="center"))
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
 def rank_calculator(adjacency_matrix):
@@ -141,10 +165,10 @@ def display_predecessor(adjacency_matrix, str_tab):
             if 0 in predecessor:
                 # Construction du String
                 if not config.notation:
-                    str_predecessor = "α" + str_predecessor[1:]
+                    str_predecessor = "α"
             elif len(adjacency_matrix) - 1 in predecessor:
                 if not config.notation:
-                    str_predecessor = str_predecessor[:-1] + "ω"
+                    str_predecessor = "ω"
             line3.append(colored(str_predecessor, attrs=["bold"]))
         predecessors.append(predecessor)
 
@@ -153,7 +177,42 @@ def display_predecessor(adjacency_matrix, str_tab):
     return predecessors, str_copy
 
 
-def earliest_start_dates(duration_matrix):
+def display_successor(adjacency_matrix, str_tab):
+    """
+    Fonction permettant d'afficher les successeurs dans le tableau
+    """
+    successors = []
+    line3 = ["Successeurs"]
+    for i in range(len(adjacency_matrix)):
+        successor = []
+        for j in range(len(adjacency_matrix)):
+            if adjacency_matrix[i][j] != 0:
+                successor.append(j)
+
+        if not successor:
+            line3.append(colored("--", attrs=["bold"]))
+        else:
+            str_successor = ""
+            for s in successor:
+                str_successor += str(s) + ", "
+            str_successor = str_successor[:-2]
+
+            if 0 in successor:
+                # Construction du String
+                if not config.notation:
+                    str_successor = "α"
+            elif len(adjacency_matrix) - 1 in successor:
+                if not config.notation:
+                    str_successor = "ω"
+            line3.append(colored(str_successor, attrs=["bold"]))
+        successors.append(successor)
+
+    str_copy = [line for line in str_tab]
+    str_copy.append(line3)
+    return successors, str_copy
+
+
+def earliest_dates(duration_matrix):
     date_per_predecessor = [0 for i in range(len(duration_matrix))]
     earliest_start_dates = [0 for i in range(len(duration_matrix))]
     for i in range(len(duration_matrix)):
@@ -178,6 +237,45 @@ def earliest_start_dates(duration_matrix):
     return date_per_predecessor, earliest_start_dates
 
 
+def latest_dates(duration_matrix, earliest_start_dates_list):
+    date_per_successor = [0 for i in range(len(duration_matrix))]
+    latest_finish_dates = [0 for i in range(len(duration_matrix))]
+    last_task_index = len(duration_matrix) - 1
+    latest_finish_dates[last_task_index] = earliest_start_dates_list[last_task_index]
+    date_per_successor[last_task_index] = [earliest_start_dates_list[last_task_index]]
+    for i in range(len(duration_matrix)):
+        for j in range(len(duration_matrix)):
+            if duration_matrix[i][j] is None:
+                duration_matrix[i][j] = 0
+
+    # Parcourir les tâches en ordre inverse pour calculer les dates au plus tard
+    for task in range(len(duration_matrix) - 2, -1, -1):  # Exclure omega
+        successors = [
+            successor
+            for successor in range(len(duration_matrix))
+            if duration_matrix[task][successor] > 0
+        ]
+        # Si la tâche a des successeurs
+        if successors:
+            latest_finish_dates[task] = min(
+                latest_finish_dates[successor] - duration_matrix[task][successor]
+                for successor in successors
+                if latest_finish_dates[successor] is not None
+            )
+            date_per_successor[task] = [latest_finish_dates[successor] - duration_matrix[task][successor] for successor in successors if latest_finish_dates[successor] is not None]
+        elif task == 0:
+            latest_finish_dates[task] = earliest_start_dates_list[task]
+            date_per_successor[task] = [earliest_start_dates_list[task]]
+        elif task == last_task_index:
+            latest_finish_dates[task] = earliest_start_dates_list[task]
+            date_per_successor[task] = [earliest_start_dates_list[task]]
+        else:
+            latest_finish_dates[task] = latest_finish_dates[last_task_index]
+            date_per_successor[task] = [latest_finish_dates[last_task_index]]
+
+    return date_per_successor, latest_finish_dates
+
+
 def display_earliest_start_dates_per_predecessor(date_per_predecessor_list, predecessors_list, str_tab):
     """
     Afficher les dates de début au plus tôt par prédécesseur.
@@ -194,6 +292,32 @@ def display_earliest_start_dates_per_predecessor(date_per_predecessor_list, pred
                 str_dates += str(date_per_predecessor_list[i][date]) + str(predecessors_list[i][date]).translate(SUB) + ", "
             str_dates = str_dates[:-2]
             line4.append(colored(str_dates, attrs=["bold"]))
+        else:
+            line4.append(colored("0", attrs=["bold"]))
+
+    str_tab_copy = [line for line in str_tab]
+    str_tab_copy.append(line4)
+    return str_tab_copy
+
+
+def display_latest_dates_per_successor(date_per_successor_list, successors_list, str_tab):
+    """
+    Afficher les dates de fin au plus tard par successeur.
+    """
+    # https://stackoverflow.com/questions/24391892/printing-subscript-in-python
+    SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+    # string.translate(SUB)
+
+    line4 = ["Dates par successeur"]
+    for i in range(len(date_per_successor_list)):
+        if date_per_successor_list[i] and successors_list[i] != []:
+            str_dates = ""
+            for date in range(len(date_per_successor_list[i])):
+                str_dates += str(date_per_successor_list[i][date]) + str(successors_list[i][date]).translate(SUB) + ", "
+            str_dates = str_dates[:-2]
+            line4.append(colored(str_dates, attrs=["bold"]))
+        elif date_per_successor_list[i] and successors_list[i] == []:
+            line4.append(colored(str(date_per_successor_list[i][0]), attrs=["bold"]))
         else:
             line4.append(colored("0", attrs=["bold"]))
 
@@ -223,12 +347,35 @@ def display_earliest_start_dates(date_per_predecessor_list, earliest_start_dates
     return str_tab_copy
 
 
+def display_latest_finish_dates(date_per_successor_list, latest_finish_dates_list, successors_list, str_tab):
+    """
+    Afficher les dates de fin au plus tard.
+    """
+    # https://stackoverflow.com/questions/24391892/printing-subscript-in-python
+    SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+    # string.translate(SUB)
+
+    line5 = ["Dates au plus-tard"]
+    for i in range(len(date_per_successor_list)):
+        if date_per_successor_list[i] and successors_list[i] != []:
+            str_dates = str(min(date_per_successor_list[i])) + str(successors_list[i][date_per_successor_list[i].index(min(date_per_successor_list[i]))]).translate(SUB)
+            line5.append(colored(str_dates, attrs=["bold"]))
+        elif date_per_successor_list[i] and successors_list[i] == []:
+            line5.append(colored(str(date_per_successor_list[i][0]), attrs=["bold"]))
+        else:
+            line5.append(colored("0", attrs=["bold"]))
+
+    str_tab_copy = [line for line in str_tab]
+    str_tab_copy.append(line5)
+    return str_tab_copy
+
+
 def sort_table_by_rank(str_tab):
     """
     Fonction permettant de trier le tableau par rang.
     Algorithmes de tri : Tri bubble
     """
-    for i in range(2, len(str_tab)):
+    for i in range(1, len(str_tab)):
         flag = 0
         for j in range(1, len(str_tab)):
             if str_tab[0][j] > str_tab[0][j+1]:
