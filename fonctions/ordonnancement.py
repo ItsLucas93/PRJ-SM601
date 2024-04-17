@@ -28,7 +28,7 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     str_tab_4, earliest_start_dates_list_line = display_earliest_start_dates(date_per_predecessor_list, earliest_start_dates_list, predecessors_list, str_tab_3)
 
     successors_list, str_tab_5 = display_successor(adjacency_matrix, str_tab)
-    date_per_successors_list, latest_dates_list = latest_dates(value_matrix, earliest_start_dates_list)
+    date_per_successors_list, latest_dates_list = latest_dates(ranks, value_matrix, earliest_start_dates_list, successors_list)
     str_tab_6 = display_latest_dates_per_successor(date_per_successors_list, successors_list, str_tab_5)
     str_tab_7, latest_dates_list_line = display_latest_finish_dates(date_per_successors_list, latest_dates_list, successors_list, str_tab_6)
 
@@ -46,11 +46,16 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
         critical_path = critical_path[:-4]
         critical_paths_str += critical_path + "\n"
 
-    print(successors_list)
-    print(date_per_successors_list)
-    print(latest_dates_list)
-    print(total_margins)
-    print(critical_paths)
+    # Affichage des résultats
+    print("Rangs", ranks)
+    print("Prédecesseurs", predecessors_list)
+    print("Dates par prédécesseur", date_per_predecessor_list)
+    print("Dates au plus-tôt", earliest_start_dates_list)
+    print("Successeurs", successors_list)
+    print("Dates par successeur", date_per_successors_list)
+    print("Dates au plus-tard", latest_dates_list)
+    print("Marges totales", total_margins)
+    print("Chemin critique", critical_paths)
 
     # Tri du tableau par tri insertion
     # TODO: Trier le tableau en fonction du rang
@@ -239,6 +244,8 @@ def display_successor(adjacency_matrix, str_tab):
 def earliest_dates(duration_matrix):
     date_per_predecessor = [0 for i in range(len(duration_matrix))]
     earliest_start_dates = [0 for i in range(len(duration_matrix))]
+
+    duration_matrix = [[duration_matrix[i][j] for j in range(len(duration_matrix))] for i in range(len(duration_matrix))]
     for i in range(len(duration_matrix)):
         for j in range(len(duration_matrix)):
             if duration_matrix[i][j] is None:
@@ -261,41 +268,43 @@ def earliest_dates(duration_matrix):
     return date_per_predecessor, earliest_start_dates
 
 
-def latest_dates(duration_matrix, earliest_start_dates_list):
-    date_per_successor = [0 for i in range(len(duration_matrix))]
-    latest_finish_dates = [0 for i in range(len(duration_matrix))]
-    last_task_index = len(duration_matrix) - 1
-    latest_finish_dates[last_task_index] = earliest_start_dates_list[last_task_index]
-    date_per_successor[last_task_index] = [earliest_start_dates_list[last_task_index]]
-    for i in range(len(duration_matrix)):
-        for j in range(len(duration_matrix)):
-            if duration_matrix[i][j] is None:
-                duration_matrix[i][j] = 0
+def latest_dates(tasks_ranks, duration_matrix, earliest_start_dates, successors_list):
+    num_tasks = len(duration_matrix)
+    latest_finish_dates = [float('inf')] * num_tasks
+    date_per_successor = [[] for _ in range(num_tasks)]
 
-    # Parcourir les tâches en ordre inverse pour calculer les dates au plus tard
-    for task in range(len(duration_matrix) - 2, -1, -1):  # Exclure omega
-        successors = [
-            successor
-            for successor in range(len(duration_matrix))
-            if duration_matrix[task][successor] > 0
-        ]
-        # Si la tâche a des successeurs
-        if successors:
-            latest_finish_dates[task] = min(
-                latest_finish_dates[successor] - duration_matrix[task][successor]
-                for successor in successors
-                if latest_finish_dates[successor] is not None
-            )
-            date_per_successor[task] = [latest_finish_dates[successor] - duration_matrix[task][successor] for successor in successors if latest_finish_dates[successor] is not None]
-        elif task == 0:
-            latest_finish_dates[task] = earliest_start_dates_list[task]
-            date_per_successor[task] = [earliest_start_dates_list[task]]
-        elif task == last_task_index:
-            latest_finish_dates[task] = earliest_start_dates_list[task]
-            date_per_successor[task] = [earliest_start_dates_list[task]]
+    # Initialiser la date au plus tard pour le point de sortie (typiquement ω)
+    latest_finish_dates[-1] = earliest_start_dates[-1]
+    date_per_successor[-1] = [earliest_start_dates[-1]]
+
+    # Créer une liste des tâches triées par rang en ordre décroissant
+    tasks_sorted_by_rank = sorted(range(num_tasks), key=lambda x: tasks_ranks[x], reverse=True)
+
+    # Deep copy
+    successors_list = [[successor for successor in successors_list[i]] for i in range(num_tasks)]
+    duration_matrix = [[duration_matrix[i][j] for j in range(num_tasks)] for i in range(num_tasks)]
+
+    # Parcourir les tâches en respectant l'ordre de rang décroissant
+    for task in tasks_sorted_by_rank:
+        if successors_list[task]:
+            list_of_dates = []
+            for idx, successor in enumerate(successors_list[task]):
+                if 0 <= successor < num_tasks and duration_matrix[task][successor] is not None:
+                    calculated_date = latest_finish_dates[successor] - duration_matrix[task][successor]
+                    list_of_dates.append(calculated_date)
+                    date_per_successor[task].append(calculated_date)
+                else:
+                    print(f"Erreur: Données manquantes ou erronées pour la tâche {task} vers {successor}")
+                    date_per_successor[task].append(float('inf'))  # Maintenir l'alignement de l'index
+
+            if list_of_dates:
+                latest_finish_dates[task] = min(list_of_dates)
+            else:
+                latest_finish_dates[task] = earliest_start_dates[task]
+                print(f"Aucune date valide trouvée pour la tâche {task}, utilisant la date au plus tôt par défaut.")
         else:
-            latest_finish_dates[task] = latest_finish_dates[last_task_index]
-            date_per_successor[task] = [latest_finish_dates[last_task_index]]
+            # Si aucune successeur n'est présent, la date au plus tard est égale à la date au plus tôt
+            latest_finish_dates[task] = earliest_start_dates[task]
 
     return date_per_successor, latest_finish_dates
 
