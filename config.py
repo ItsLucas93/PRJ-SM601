@@ -10,4 +10,4 @@ Variable de configuration pour la notation des sommets du graphe.
 Si: True -> Notation classique (0, N+1)
     False -> Notation grecque (α, ω)
 """
-notation = True
+notation = False
