@@ -36,15 +36,7 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     critical_paths = find_critical_paths(adjacency_matrix, total_margins)
     str_tab_8 = display_margin_table(total_margins, earliest_start_dates_list_line, latest_dates_list_line, str_tab)
 
-    critical_paths_str = ""
-    i = 0
-    for path in critical_paths:
-        i += 1
-        critical_path = str(i) + ".\t"
-        for task in path:
-            critical_path += str(task) + " -> "
-        critical_path = critical_path[:-4]
-        critical_paths_str += critical_path + "\n"
+    critical_paths_str, i = display_critical_paths(critical_paths)
 
     # Affichage des résultats
     print("Rangs", ranks)
@@ -427,23 +419,37 @@ def total_margin(earliest_start_dates, latest_finish_dates):
 
 
 def find_critical_paths(adjacency_matrix, margins):
-    critical_tasks = set(i for i, m in enumerate(margins) if m == 0)
+    """
+    Trouver tous les chemins critiques dans le graphe.
+    Un chemin critique est défini comme un chemin où toutes les tâches ont une marge de zéro.
+    """
+    start_node = 0  # Habituellement, alpha est le point de départ dans le graphe d'ordonnancement
+    end_node = len(adjacency_matrix) - 1  # Omega est le point final
 
+    # Initialiser la liste des chemins critiques
     critical_paths = []
-    for task in critical_tasks:
-        path = [task]
-        # Recherche des successeurs critiques
-        while True:
-            critical_successors = [s for s in range(len(adjacency_matrix)) if
-                                   adjacency_matrix[task][s] > 0 and s in critical_tasks]
-            if not critical_successors:
-                break
-            task = critical_successors[
-                0]  # Si multiples successeurs critiques, cela pourrait diverger en chemins séparés
-            path.append(task)
 
-        if path[-1] == len(adjacency_matrix) - 1 and path[0] == 0:
-            critical_paths.append(path)
+    # Fonction récursive pour explorer les chemins
+    def dfs(current_node, path):
+        # Ajouter le noeud actuel au chemin
+        path.append(current_node)
+
+        # Si le noeud actuel est le noeud de fin et que tous les noeuds dans le chemin sont critiques
+        if current_node == end_node:
+            # Vérifier si tous les noeuds dans le chemin ont une marge de zéro
+            if all(margins[node] == 0 for node in path):
+                critical_paths.append(path.copy())
+        else:
+            # Continuer à explorer les successeurs qui ont également une marge de zéro
+            for successor in range(len(adjacency_matrix[current_node])):
+                if adjacency_matrix[current_node][successor] > 0 and margins[successor] == 0:
+                    dfs(successor, path)
+
+        # Retirer le noeud actuel du chemin avant de revenir en arrière
+        path.pop()
+
+    # Commencer l'exploration à partir du noeud de départ
+    dfs(start_node, [])
 
     return critical_paths
 
@@ -470,3 +476,24 @@ def display_margin_table(total_margins, earliest_start_dates_list_line, latest_d
     str_tab_copy.append(line6)
 
     return str_tab_copy
+
+
+def display_critical_paths(critical_paths):
+    temp_str = ""
+    i = 0
+    for path in critical_paths:
+        i += 1
+        critical_path = str(i) + ".\t"
+        for task in path:
+            if not config.notation:
+                if task == critical_paths[0][0]:
+                    critical_path += "α" + " -> "
+                elif task == critical_paths[0][-1]:
+                    critical_path += "ω" + " -> "
+                else:
+                    critical_path += str(task) + " -> "
+            else:
+                critical_path += str(task) + " -> "
+        critical_path = critical_path[:-4]
+        temp_str += critical_path + "\n"
+    return temp_str, i
