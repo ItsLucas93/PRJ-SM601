@@ -73,7 +73,7 @@ def display_graph_relations(graph_dictionnary):
                 print(str(task_id) + " → ω = " + str(graph_dictionnary[task_id][0]))
 
 
-def display_graph_matrix(graph_matrix):
+def display_graph_matrix(graph_matrix, option=""):
     """
     Fonction permettant d'afficher la matrice du graphe.
     """
@@ -101,5 +101,14 @@ def display_graph_matrix(graph_matrix):
                 body.append([colored("ω", "cyan", attrs=["bold"])] + row)
             else:
                 body.append([colored(str(i), "cyan", attrs=["bold"])] + row)
+
+    if option == "diag":
+        for i in range(len(body)):
+            for j in range(1, len(body[i])):
+                if i == j - 1:
+                    if body[i][j] == 0:
+                        body[i][j] = colored(body[i][j], "light_green", attrs=["bold"])
+                    else:
+                        body[i][j] = colored(body[i][j], "light_red", attrs=["bold"])
 
     print(tabulate(body, headers=header, tablefmt="mixed_outline", numalign="center", stralign="center"))
