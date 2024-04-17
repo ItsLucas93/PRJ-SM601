@@ -145,7 +145,7 @@ def ordonnancement_validator(matrix, graph={}):
             print(colored("Le graphe ne possède pas qu'un seul point d'entrée.", "red", attrs=["bold"]))
         else:
             if not config.notation:
-                    print("Le graphe possède un seul point d'entrée : α")
+                print("Le graphe possède un seul point d'entrée : α")
             else:
                 print("Le graphe possède un seul point d'entrée : " + str(entry_point))
         if not is_single_exit_point:
