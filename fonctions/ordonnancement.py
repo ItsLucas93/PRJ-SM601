@@ -25,15 +25,32 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     predecessors_list, str_tab_2 = display_predecessor(adjacency_matrix, str_tab)
     date_per_predecessor_list, earliest_start_dates_list = earliest_dates(value_matrix)
     str_tab_3 = display_earliest_start_dates_per_predecessor(date_per_predecessor_list, predecessors_list, str_tab_2)
-    str_tab_4 = display_earliest_start_dates(date_per_predecessor_list, earliest_start_dates_list, predecessors_list, str_tab_3)
+    str_tab_4, earliest_start_dates_list_line = display_earliest_start_dates(date_per_predecessor_list, earliest_start_dates_list, predecessors_list, str_tab_3)
 
     successors_list, str_tab_5 = display_successor(adjacency_matrix, str_tab)
     date_per_successors_list, latest_dates_list = latest_dates(value_matrix, earliest_start_dates_list)
     str_tab_6 = display_latest_dates_per_successor(date_per_successors_list, successors_list, str_tab_5)
-    str_tab_7 = display_latest_finish_dates(date_per_successors_list, latest_dates_list, successors_list, str_tab_6)
+    str_tab_7, latest_dates_list_line = display_latest_finish_dates(date_per_successors_list, latest_dates_list, successors_list, str_tab_6)
+
+    total_margins = total_margin(earliest_start_dates_list, latest_dates_list)
+    critical_paths = find_critical_paths(adjacency_matrix, total_margins)
+    str_tab_8 = display_margin_table(total_margins, earliest_start_dates_list_line, latest_dates_list_line, str_tab)
+
+    critical_paths_str = ""
+    i = 0
+    for path in critical_paths:
+        i += 1
+        critical_path = str(i) + ".\t"
+        for task in path:
+            critical_path += str(task) + " -> "
+        critical_path = critical_path[:-4]
+        critical_paths_str += critical_path + "\n"
+
     print(successors_list)
     print(date_per_successors_list)
     print(latest_dates_list)
+    print(total_margins)
+    print(critical_paths)
 
     # Tri du tableau par tri insertion
     # TODO: Trier le tableau en fonction du rang
@@ -74,6 +91,13 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
 
     print("* " + colored("Dates au plus-tard - Par Successeur :", attrs=["bold", "underline"]))
     print(tabulate(str_tab_7, tablefmt="mixed_grid", numalign="center", stralign="center"))
+    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+
+    print("* " + colored("Marges totales & Chemins critiques :", attrs=["bold", "underline"]))
+    print(tabulate(str_tab_8, tablefmt="mixed_grid", numalign="center", stralign="center"))
+    # Affichage des chemins critiques
+    print("Nous sommes en présence de " + colored(str(i), "cyan", attrs=["bold"]) + " chemin(s) critique(s) :")
+    print(critical_paths_str)
     input(colored("Appuyez sur une touche pour continuer...", "magenta"))
 
 def rank_calculator(adjacency_matrix):
@@ -344,7 +368,7 @@ def display_earliest_start_dates(date_per_predecessor_list, earliest_start_dates
 
     str_tab_copy = [line for line in str_tab]
     str_tab_copy.append(line5)
-    return str_tab_copy
+    return str_tab_copy, line5
 
 
 def display_latest_finish_dates(date_per_successor_list, latest_finish_dates_list, successors_list, str_tab):
@@ -367,7 +391,7 @@ def display_latest_finish_dates(date_per_successor_list, latest_finish_dates_lis
 
     str_tab_copy = [line for line in str_tab]
     str_tab_copy.append(line5)
-    return str_tab_copy
+    return str_tab_copy, line5
 
 
 def sort_table_by_rank(str_tab):
@@ -392,3 +416,56 @@ def sort_table_by_rank(str_tab):
             break
 
     return str_tab
+
+
+def total_margin(earliest_start_dates, latest_finish_dates):
+    """
+    Calculer les marges totales.
+    """
+    return [latest_finish_dates[i] - earliest_start_dates[i] for i in range(len(earliest_start_dates))]
+
+
+def find_critical_paths(adjacency_matrix, margins):
+    critical_tasks = set(i for i, m in enumerate(margins) if m == 0)
+
+    critical_paths = []
+    for task in critical_tasks:
+        path = [task]
+        # Recherche des successeurs critiques
+        while True:
+            critical_successors = [s for s in range(len(adjacency_matrix)) if
+                                   adjacency_matrix[task][s] > 0 and s in critical_tasks]
+            if not critical_successors:
+                break
+            task = critical_successors[
+                0]  # Si multiples successeurs critiques, cela pourrait diverger en chemins séparés
+            path.append(task)
+
+        if path[-1] == len(adjacency_matrix) - 1 and path[0] == 0:
+            critical_paths.append(path)
+
+    return critical_paths
+
+
+def display_margin_table(total_margins, earliest_start_dates_list_line, latest_dates_list_line, str_tab):
+    """
+    Afficher les marges totales.
+    """
+    line6 = ["Marges totales"]
+    earliest_start_dates_list_line = [line for line in earliest_start_dates_list_line]
+    latest_dates_list_line = [line for line in latest_dates_list_line]
+
+    for i in range(len(total_margins)):
+        if total_margins[i] == 0:
+            line6.append(colored(str(total_margins[i]), "red", attrs=["bold"]))
+            earliest_start_dates_list_line[i + 1] = colored(str(earliest_start_dates_list_line[i + 1]), "red", attrs=["bold"])
+            latest_dates_list_line[i + 1] = colored(str(latest_dates_list_line[i + 1]), "red", attrs=["bold"])
+        else:
+            line6.append(colored(str(total_margins[i]), attrs=["bold"]))
+
+    str_tab_copy = [line for line in str_tab]
+    str_tab_copy.append(earliest_start_dates_list_line)
+    str_tab_copy.append(latest_dates_list_line)
+    str_tab_copy.append(line6)
+
+    return str_tab_copy
