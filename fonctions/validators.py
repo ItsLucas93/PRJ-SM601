@@ -120,7 +120,7 @@ def ordonnancement_validator(matrix, graph={}):
 
     # Affichage des matrices
     print("* " + colored("Matrice d'adjacence :", attrs=["bold", "underline"]))
-    display_graph_matrix(adjacency_matrix)
+    display_graph_matrix(adjacency_matrix, "adjacency")
     print("* " + colored("Matrice transitive :", attrs=["bold", "underline"]))
     display_graph_matrix(transitive_matrix, "diag")
 

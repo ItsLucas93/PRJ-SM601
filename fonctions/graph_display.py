@@ -102,7 +102,7 @@ def display_graph_matrix(graph_matrix, option=""):
             else:
                 body.append([colored(str(i), "cyan", attrs=["bold"])] + row)
 
-    if option == "diag":
+    if "diag" in option:
         for i in range(len(body)):
             for j in range(1, len(body[i])):
                 if i == j - 1:
@@ -110,5 +110,18 @@ def display_graph_matrix(graph_matrix, option=""):
                         body[i][j] = colored(body[i][j], "light_green", attrs=["bold"])
                     else:
                         body[i][j] = colored(body[i][j], "light_red", attrs=["bold"])
+                else:
+                    if body[i][j] == 0:
+                        body[i][j] = colored(body[i][j], "dark_grey", attrs=[])
+                    else:
+                        body[i][j] = colored(body[i][j], attrs=["bold"])
+
+    if "adjacency" in option:
+        for i in range(len(body)):
+            for j in range(1, len(body[i])):
+                if body[i][j] == 0:
+                    body[i][j] = colored(body[i][j], "dark_grey", attrs=[])
+                else:
+                    body[i][j] = colored(body[i][j], attrs=["bold"])
 
     print(tabulate(body, headers=header, tablefmt="mixed_outline", numalign="center", stralign="center"))
