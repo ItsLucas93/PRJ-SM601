@@ -5,6 +5,8 @@ Description: Ce fichier est le fichier qui contient les fonctions de validation 
 Version de Python : 3.12
 """
 from termcolor import colored
+
+import config
 from fonctions.graph_display import display_graph_matrix
 
 def matrix_value_to_matrix_adjacency(matrix):
@@ -123,8 +125,17 @@ def ordonnancement_validator(matrix, graph={}):
     display_graph_matrix(transitive_matrix, "diag")
 
     if is_single_entry_point and is_single_exit_point and is_no_circuit_graph and has_no_negative_edges_graph:
-        print("Le graphe possède un seul point d'entrée : " + str(entry_point))
-        print("Le graphe possède un seul point de sortie : " + str(exit_point))
+        if not config.notation:
+            if entry_point == 0:
+                print("Le graphe possède un seul point d'entrée : α")
+            if exit_point == len(adjacency_matrix) - 1:
+                print("Le graphe possède un seul point de sortie : ω")
+        else:
+            if entry_point == 0:
+                print("Le graphe possède un seul point d'entrée : " + str(entry_point))
+            if exit_point == len(adjacency_matrix) - 1:
+                print("Le graphe possède un seul point de sortie : " + str(exit_point))
+
         print("Le graphe ne possède pas de circuit.")
         print("Le graphe ne possède pas d'arêtes négatives.")
         print(colored("Le graphe est un graphe d'ordonnancement.", "green", attrs=["bold"]))
