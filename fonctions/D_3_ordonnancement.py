@@ -6,7 +6,7 @@ Version de Python : 3.12
 """
 from tabulate import tabulate
 from termcolor import colored
-import config
+import D_3_config as config
 
 """
 4. Calculer les rangs de tous les sommets du graphe.

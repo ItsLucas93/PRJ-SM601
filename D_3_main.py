@@ -30,19 +30,21 @@ FIn
 """
 from termcolor import colored
 
-from filemanager.filemanager import files_list
-from filemanager.filemanager import read_file
-from fonctions.graph_display import display_graph_matrix
-from fonctions.graph_display import display_graph_relations
-from fonctions.validators import ordonnancement_validator
-from fonctions.ordonnancement import ordonnencement_graph
+from filemanager.D_3_filemanager import files_list
+from filemanager.D_3_filemanager import read_file
+from fonctions.D_3_graph_display import display_graph_matrix
+from fonctions.D_3_graph_display import display_graph_relations
+from fonctions.D_3_validators import ordonnancement_validator
+from fonctions.D_3_ordonnancement import ordonnencement_graph
 
 
 # Fonctions
 def welcome():
     """
-    Fonction permettant d'afficher un message de bienvenue coloré.
-    """
+     * Fonction: welcome
+     * -----------------
+     * Fonction permettant d'afficher un message de bienvenue coloré.
+    ²²²"""
     print(colored("\n\\\\\\ Bienvenue dans le Projet "
                   "\n\t\t░█████╗░██████╗░██████╗░░█████╗░███╗░░██╗███╗░░██╗░█████╗░███╗░░██╗░█████╗░███████╗███╗░░░███╗███████╗███╗░░██╗████████╗"
                   "\n\t\t██╔══██╗██╔══██╗██╔══██╗██╔══██╗████╗░██║████╗░██║██╔══██╗████╗░██║██╔══██╗██╔════╝████╗░████║██╔════╝████╗░██║╚══██╔══╝"

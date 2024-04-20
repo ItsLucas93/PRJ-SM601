@@ -6,8 +6,8 @@ Version de Python : 3.12
 """
 from termcolor import colored
 
-import config
-from fonctions.graph_display import display_graph_matrix
+import D_3_config as config
+from fonctions.D_3_graph_display import display_graph_matrix
 
 def matrix_value_to_matrix_adjacency(matrix):
     """

@@ -8,7 +8,7 @@ Version de Python : 3.12
 from tabulate import tabulate
 from termcolor import colored
 
-import config
+import D_3_config as config
 
 def display_graph_relations(graph_dictionnary):
     """
