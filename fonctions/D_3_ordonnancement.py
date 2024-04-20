@@ -555,7 +555,6 @@ def find_critical_paths(adjacency_matrix, margins):
     def dfs(current_node, path):
         # Ajouter le noeud actuel au chemin
         path.append(current_node)
-        print(path)
 
         # Si le noeud actuel est le noeud de fin et que tous les noeuds dans le chemin sont critiques
         if current_node == end_node:
