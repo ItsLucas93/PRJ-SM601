@@ -16,6 +16,7 @@ est égale à sa date au plus tôt.
 6. Calculer le(s) chemin(s) critique(s) et les afficher
 """
 
+
 def ordonnencement_graph(adjacency_matrix, value_matrix):
     """
     * Fonction: ordonnencement_graph
@@ -41,15 +42,18 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
 
     # Récupération de l'affichage des dates au plus tôt dans le str_tab
     str_tab_3 = display_earliest_start_dates_per_predecessor(date_per_predecessor_list, predecessors_list, str_tab_2)
-    str_tab_4, earliest_start_dates_list_line = display_earliest_start_dates(date_per_predecessor_list, predecessors_list, str_tab_3)
+    str_tab_4, earliest_start_dates_list_line = display_earliest_start_dates(date_per_predecessor_list,
+                                                                             predecessors_list, str_tab_3)
 
     # Calcul des dates au plus tard par successeur et des dates au plus tard
     successors_list, str_tab_5 = display_successor(adjacency_matrix, str_tab)
-    date_per_successors_list, latest_dates_list = latest_dates(ranks, value_matrix, earliest_start_dates_list, successors_list)
+    date_per_successors_list, latest_dates_list = latest_dates(ranks, value_matrix, earliest_start_dates_list,
+                                                               successors_list)
 
     # Récupération de l'affichage des dates au plus tard dans le str_tab
     str_tab_6 = display_latest_dates_per_successor(date_per_successors_list, successors_list, str_tab_5)
-    str_tab_7, latest_dates_list_line = display_latest_finish_dates(date_per_successors_list, successors_list, str_tab_6)
+    str_tab_7, latest_dates_list_line = display_latest_finish_dates(date_per_successors_list, successors_list,
+                                                                    str_tab_6)
 
     # Calcul des marges totales et des chemins critiques
     total_margins = total_margin(earliest_start_dates_list, latest_dates_list)
@@ -112,7 +116,8 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     # Affichage des chemins critiques
     print("Nous sommes en présence de " + colored(str(i), "cyan", attrs=["bold"]) + " chemin(s) critique(s) :")
     print(critical_paths_str)
-    input(colored("Appuyez sur une touche pour continuer...", "magenta"))
+    input(colored("Appuyez sur une touche pour continuer... (Fin de l'ordonnancement)", "magenta"))
+
 
 def rank_calculator(adjacency_matrix):
     """
@@ -391,7 +396,8 @@ def display_earliest_start_dates_per_predecessor(date_per_predecessor_list, pred
         if date_per_predecessor_list[i]:
             str_dates = ""
             for date in range(len(date_per_predecessor_list[i])):
-                str_dates += str(date_per_predecessor_list[i][date]) + str(predecessors_list[i][date]).translate(SUB) + ", "
+                str_dates += str(date_per_predecessor_list[i][date]) + str(predecessors_list[i][date]).translate(
+                    SUB) + ", "
             str_dates = str_dates[:-2]
             line4.append(colored(str_dates, attrs=["bold"]))
         else:
@@ -455,7 +461,9 @@ def display_earliest_start_dates(date_per_predecessor_list, predecessors_list, s
     line5 = ["Dates au plus-tôt"]
     for i in range(len(date_per_predecessor_list)):
         if date_per_predecessor_list[i]:
-            str_dates = str(max(date_per_predecessor_list[i])) + str(predecessors_list[i][date_per_predecessor_list[i].index(max(date_per_predecessor_list[i]))]).translate(SUB)
+            str_dates = str(max(date_per_predecessor_list[i])) + str(
+                predecessors_list[i][date_per_predecessor_list[i].index(max(date_per_predecessor_list[i]))]).translate(
+                SUB)
             line5.append(colored(str_dates, attrs=["bold"]))
         else:
             line5.append(colored("0", attrs=["bold"]))
@@ -484,7 +492,8 @@ def display_latest_finish_dates(date_per_successor_list, successors_list, str_ta
     line5 = ["Dates au plus-tard"]
     for i in range(len(date_per_successor_list)):
         if date_per_successor_list[i] and successors_list[i] != []:
-            str_dates = str(min(date_per_successor_list[i])) + str(successors_list[i][date_per_successor_list[i].index(min(date_per_successor_list[i]))]).translate(SUB)
+            str_dates = str(min(date_per_successor_list[i])) + str(
+                successors_list[i][date_per_successor_list[i].index(min(date_per_successor_list[i]))]).translate(SUB)
             line5.append(colored(str_dates, attrs=["bold"]))
         elif date_per_successor_list[i] and successors_list[i] == []:
             line5.append(colored(str(date_per_successor_list[i][0]), attrs=["bold"]))
@@ -597,7 +606,8 @@ def display_margin_table(total_margins, earliest_start_dates_list_line, latest_d
     for i in range(len(total_margins)):
         if total_margins[i] == 0:
             line6.append(colored(str(total_margins[i]), "red", attrs=["bold"]))
-            earliest_start_dates_list_line[i + 1] = colored(str(earliest_start_dates_list_line[i + 1]), "red", attrs=["bold"])
+            earliest_start_dates_list_line[i + 1] = colored(str(earliest_start_dates_list_line[i + 1]), "red",
+                                                            attrs=["bold"])
             latest_dates_list_line[i + 1] = colored(str(latest_dates_list_line[i + 1]), "red", attrs=["bold"])
         else:
             line6.append(colored(str(total_margins[i]), attrs=["bold"]))

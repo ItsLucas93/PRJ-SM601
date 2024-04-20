@@ -144,6 +144,9 @@ def menu_graphe(choix=0):
                             match confirm:
                                 case 'y':
                                     ordonnencement_graph(adjacency_matrix, graph_matrix)
+                                    print("---------------------- Menu Graphe ----------------------"
+                                          + string_test_files +
+                                          "----------------------------------------------------------")
                                     break
                                 case 'n':
                                     print(
