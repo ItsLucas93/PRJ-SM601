@@ -11,10 +11,18 @@ from fonctions.D_3_graph_display import display_graph_matrix
 
 def matrix_value_to_matrix_adjacency(matrix):
     """
-    Convertir une matrice de valeurs en une matrice d'adjacence.
+     * Fonction: matrix_value_to_matrix_adjacency
+     * -----------------
+     * Fonction permettant de convertir une matrice de valeurs en une matrice d'adjacence.
+     * Une matrice d'adjacence est initialisé à 0.
+     * En parcourant la matrice de valeur, dès qu'une valeur est non-nulle, on met à 1 la aux mêmes positions dans la matrice d'adjacence.
+     * :param matrix: Matrice 2D de valeurs
+     * :return: Matrice d'adjacence
     """
+    # Initialisation de la matrice d'adjacence à 0
     adjacency_matrix = [[0 for i in range(len(matrix))] for j in range(len(matrix))]
 
+    # Remplissage de la matrice d'adjacence
     for i in range(len(matrix)):
         for j in range(len(matrix)):
             if matrix[i][j] is not None:
@@ -25,18 +33,23 @@ def matrix_value_to_matrix_adjacency(matrix):
 
 def matrix_adjacency_to_transitive_matrix(matrix):
     """
-    Détection de la présence de circuit dans le graph
-    Méthode appliqué : Matrice d’adjacence d’une fermeture transitive, obtention suivant la méthode de Roy-Warshall
-    Source : https://fr.wikipedia.org/wiki/Algorithme_de_Warshall
-     Roy-Warshall (C)
-     pour k de 1 à n
-       pour i de 1 à n
-         pour j de 1 à n
-           C[i,j] = C[i,j] or (C[i,k] and C[k,j])
-     retourner C
+     * Fonction: matrix_adjacency_to_transitive_matrix
+     * -----------------
+     * Fonction permettant de convertir une matrice d'adjacence en une matrice transitive.
+     * Méthode appliqué : Matrice d’adjacence d’une fermeture transitive, obtention suivant la méthode de Roy-Warshall
+     *
+     * Source : https://fr.wikipedia.org/wiki/Algorithme_de_Warshall
+     *    Roy-Warshall (C)
+     *    pour k de 1 à n
+     *      pour i de 1 à n
+     *        pour j de 1 à n
+     *          C[i,j] = C[i,j] or (C[i,k] and C[k,j])
+     *    retourner C
     """
+    # Copie de la matrice
     transitive_matrix = [row[:] for row in matrix]
 
+    # Application de l'algorithme de Roy-Warshall
     for k in range(len(transitive_matrix)):
         for i in range(len(transitive_matrix)):
             for j in range(len(transitive_matrix)):
@@ -48,13 +61,22 @@ def matrix_adjacency_to_transitive_matrix(matrix):
 
 def is_single_entry(adjacency_matrix):
     """
-    Vérification de la présence d'un seul point d'entrée dans le graphe.
-    Rappel: Un point d'entrée est un sommet ayant une colonne nulle. (Pas de sommets pointant vers lui)
+     * Fonction: is_single_entry
+     * -----------------
+     * Vérification de la présence d'un seul point d'entrée dans le graphe.
+     * Rappel: Un point d'entrée est un sommet ayant une colonne nulle. (Pas de sommets pointant vers lui)
+     * :param adjacency_matrix: Matrice d'adjacence
+     * :return: Point d'entrée, Vrai si un seul | Liste de point d'entrée, Faux
     """
+    # Initialisation d'une liste où seront collectés les points d'entrées
     entry_point = []
+
+    # Parcours de la matrice d'adjacence et détection des points d'entrées
     for i in range(len(adjacency_matrix)):
         if sum([adjacency_matrix[j][i] for j in range(len(adjacency_matrix))]) == 0:
             entry_point.append(i)
+
+    # Vérification de la présence d'un seul point d'entrée
     if len(entry_point) == 1:
         return entry_point[0], True
     return entry_point, False
@@ -62,13 +84,22 @@ def is_single_entry(adjacency_matrix):
 
 def is_single_exit(adjacency_matrix):
     """
-    Vérification de la présence d'une seule sortie dans le graphe.
-    Rappel: Un point de sortie est un sommet ayant une ligne nulle. (Pas de sommets pointant vers lui)
+     * Fonction: is_single_exit
+     * -----------------
+     * Vérification de la présence d'une seule sortie dans le graphe.
+     * Rappel: Un point de sortie est un sommet ayant une ligne nulle. (Pas de sommets pointant vers lui)
+     * :param adjacency_matrix: Matrice d'adjacence
+     * :return: Point de sortie, Vrai si un seul | Liste de point de sortie, Faux
     """
+    # Initialisation d'une liste où seront collectés les points de sorties
     exit_point = []
+
+    # Parcours de la matrice d'adjacence et détection des points de sorties
     for i in range(len(adjacency_matrix)):
         if sum([adjacency_matrix[i][j] for j in range(len(adjacency_matrix))]) == 0:
             exit_point.append(i)
+
+    # Vérification de la présence d'un seul point de sortie
     if len(exit_point) == 1:
         return exit_point[0], True
     return exit_point, False
@@ -76,9 +107,13 @@ def is_single_exit(adjacency_matrix):
 
 def is_no_circuit(transitive_matrix):
     """
-    Vérification de la présence de circuit dans le graphe.
-    On part d'un graphe transitif et on vérifie que la diagonale est nulle.
-    cf. Méthode 1 : Un graphe est sans circuit si la matrice d'adjacence M de sa fermeture transitive ne possède aucun 1 sur la diagonale.
+     * Fonction: is_no_circuit
+     * -----------------
+     * Vérification de la présence de circuit dans le graphe.
+     * On part d'un graphe transitif et on vérifie que la diagonale est nulle.
+     * cf. Méthode 1 : Un graphe est sans circuit si la matrice d'adjacence M de sa fermeture transitive ne possède aucun 1 sur la diagonale.
+     * :param transitive_matrix: Matrice transitive
+     * :return: Vrai si le graphe ne possède pas de circuit
     """
     for i in range(len(transitive_matrix)):
         if transitive_matrix[i][i] == 1:
@@ -88,8 +123,12 @@ def is_no_circuit(transitive_matrix):
 
 def has_no_negative_edges(matrix):
     """
-    Vérification de la présence d'arêtes négatives dans le graphe.
-    On parcourt la matrice et on vérifie que les valeurs sont positives.
+     * Fonction: has_no_negative_edges
+     * -----------------
+     * Vérification de la présence d'arêtes négatives dans le graphe.
+     * On parcourt la matrice et on s'arrête dès qu'une valeur négative est détectée.
+     * :param matrix: Matrice de valeurs
+     * :return: Vrai si le graphe ne possède pas d'arêtes négatives, Faux sinon
     """
     for i in range(len(matrix)):
         for j in range(len(matrix)):
@@ -100,7 +139,16 @@ def has_no_negative_edges(matrix):
 
 def ordonnancement_validator(matrix, graph={}):
     """
-    Vérification des propriétés du graphe d'ordonnancement.
+     * Fonction: ordonnancement_validator
+     * -----------------
+     * Vérification des propriétés du graphe d'ordonnancement.
+     * Le graphe doit respecter les propriétés suivantes :
+     *      Un seul point d'entrée
+     *      Un seul point de sortie
+     *      Pas de circuit
+     *      Pas d'arêtes négatives
+     * :param matrix: Matrice de valeurs
+     * :param graph: Booléen en fonction des propriétés précédentes ainsi que la matrice d'adjacence
     """
     # Construction de la matrice d'adjaence et transitive
     adjacency_matrix = matrix_value_to_matrix_adjacency(matrix)
@@ -124,6 +172,7 @@ def ordonnancement_validator(matrix, graph={}):
     print("* " + colored("Matrice transitive :", attrs=["bold", "underline"]))
     display_graph_matrix(transitive_matrix, "diag")
 
+    # Vérification des propriétés du graphe
     if is_single_entry_point and is_single_exit_point and is_no_circuit_graph and has_no_negative_edges_graph:
         if not config.notation:
             if entry_point == 0:
