@@ -74,13 +74,6 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     str_tab_7 = sort_table_by_rank(str_tab_7, ranks)
     str_tab_8 = sort_table_by_rank(str_tab_8, ranks)
 
-    # Affichage des résultats
-    print("Rangs", ranks)
-    print("Dates au plus tôt", earliest_start_dates_list)
-    print("Dates au plus tard", latest_dates_list)
-    print("Marges totales", total_margins)
-    print("Chemin(s) critique(s)", critical_paths)
-
     # Rangs
     print("* " + colored("Rangs :", attrs=["bold", "underline"]))
     print(tabulate(str_tab, tablefmt="mixed_grid", numalign="center", stralign="center"))
