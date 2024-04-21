@@ -7,6 +7,7 @@ Version de Python : 3.12
 from tabulate import tabulate
 from termcolor import colored
 import D_3_config as config
+from fonctions.D_3_graph_display import display_graph_matrix
 
 """
 4. Calculer les rangs de tous les sommets du graphe.
@@ -38,7 +39,7 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
 
     # Calcul des dates au plus tôt par prédécesseur et des dates au plus tôt
     predecessors_list, str_tab_2 = display_predecessor(adjacency_matrix, str_tab)
-    date_per_predecessor_list, earliest_start_dates_list = earliest_dates(value_matrix)
+    date_per_predecessor_list, earliest_start_dates_list = earliest_dates(ranks, value_matrix)
 
     # Récupération de l'affichage des dates au plus tôt dans le str_tab
     str_tab_3 = display_earliest_start_dates_per_predecessor(date_per_predecessor_list, predecessors_list, str_tab_2)
@@ -74,6 +75,12 @@ def ordonnencement_graph(adjacency_matrix, value_matrix):
     str_tab_8 = sort_table_by_rank(str_tab_8, ranks)
 
     # Affichage des résultats
+    print("Rangs", ranks)
+    print("Dates au plus tôt", earliest_start_dates_list)
+    print("Dates au plus tard", latest_dates_list)
+    print("Marges totales", total_margins)
+    print("Chemin(s) critique(s)", critical_paths)
+
     # Rangs
     print("* " + colored("Rangs :", attrs=["bold", "underline"]))
     print(tabulate(str_tab, tablefmt="mixed_grid", numalign="center", stralign="center"))
@@ -283,7 +290,7 @@ def display_successor(adjacency_matrix, str_tab):
     return successors, str_copy
 
 
-def earliest_dates(value_matrix):
+def earliest_dates(ranks, value_matrix):
     """
     * Fonction: earliest_dates
     * -------------------------
@@ -292,27 +299,27 @@ def earliest_dates(value_matrix):
     * :return: Liste des dates de début au plus tôt par prédécesseur, Liste des dates de début au plus tôt
     """
     # Initialisation des variables
-    date_per_predecessor = [0 for i in range(len(value_matrix))]
-    earliest_start_dates = [0 for i in range(len(value_matrix))]
+    num_tasks = len(value_matrix)
+    date_per_predecessor = [0 for i in range(num_tasks)]
+    earliest_start_dates = [0 for i in range(num_tasks)]
 
-    # Deep copy
-    value_matrix = [[value_matrix[i][j] for j in range(len(value_matrix))] for i in range(len(value_matrix))]
+    # Remplacer les valeurs None par -1 pour les calculs, -1 pour prendre en compte les duration de 0
+    value_matrix = [[-1 if value_matrix[i][j] is None else value_matrix[i][j] for j in range(num_tasks)] for i in range(num_tasks)]
 
-    # Remplacer les valeurs 'None' par 0
-    for i in range(len(value_matrix)):
-        for j in range(len(value_matrix)):
-            if value_matrix[i][j] is None:
-                value_matrix[i][j] = 0
+    # Création d'un index trié par rang en ordre croissant
+    tasks_sorted_by_rank = sorted(range(num_tasks), key=lambda x: ranks[x])
 
-    # Parcourir chaque tâche (en excluant 'alpha' qui est l'indice 0)
-    for task in range(1, len(value_matrix)):
-        # Trouver les prédécesseurs et calculer les dates de fin au plus tôt pour chaque tâche
-        predecessors_finish_times = [
-            earliest_start_dates[predecessor] + value_matrix[predecessor][task]
-            for predecessor in range(len(value_matrix)) if value_matrix[predecessor][task] > 0
-        ]
+    # Calculer les dates au plus tôt
+    for task in tasks_sorted_by_rank:
+        # Ignorer le point de départ
+        if task == 0:
+            continue
+        predecessors_finish_times = []
+        for predecessor in range(num_tasks):
+            if value_matrix[predecessor][task] >= 0:
+                finish_time = earliest_start_dates[predecessor] + value_matrix[predecessor][task]
+                predecessors_finish_times.append(finish_time)
 
-        # print(predecessors_finish_times)
         # Si la tâche a des prédécesseurs, la date de début au plus tôt est la plus grande date de fin de ses prédécesseurs
         if predecessors_finish_times:
             earliest_start_dates[task] = max(predecessors_finish_times)
