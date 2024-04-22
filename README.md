@@ -148,8 +148,4 @@ python3 D_3_main.py
 
 Ce projet est proposé par [Helen KASSEL](https://eng.efrei.fr/department-of-mathematics/), coordinatrice du module SM601 - Théorie des Graphes à l'[Efrei Paris Panthéon Assas Université](https://www.efrei.fr/).
 
-Groupe de projet (D-3) constitué de :
-* BAUDET Antoine
-* HOUEE Adrien
-* SABBEH Chokri
-* Lucas KOCOGLU
+Remerciements à [Antoine BAUDET](https://github.com/Kenix0) pour sa participation au projet.
