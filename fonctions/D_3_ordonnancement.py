@@ -1,6 +1,6 @@
 """
 Projet: PRJ-SM601 - Théorie des Graphes - 2023/2024 - Thème sur l'Ordonnancement
-Auteurs: BAUDET Antoine, SABBEH Chokri, HOUEE Adrien, KOCOGLU Lucas
+Auteur: KOCOGLU Lucas
 Description: Ce fichier est le fichier qui contient les fonctions d'ordonnancement du graphe.
 Version de Python : 3.12
 """
