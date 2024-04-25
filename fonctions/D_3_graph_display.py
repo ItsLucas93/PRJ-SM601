@@ -1,6 +1,6 @@
 """
 Projet: PRJ-SM601 - Théorie des Graphes - 2023/2024 - Thème sur l'Ordonnancement
-Auteurs: BAUDET Antoine, SABBEH Chokri, HOUEE Adrien, KOCOGLU Lucas
+Auteur: KOCOGLU Lucas
 Description: Fichier contenant les fonctions d'affichage du graphe.
 Version de Python : 3.12
 """
